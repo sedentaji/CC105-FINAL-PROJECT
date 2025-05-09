@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Apple Quality Predictor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f8f8f8;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e0f7e0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background-color: #DB4437;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -40px;
+            left: -40px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+        }
+        
+        .apple-stem {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            width: 8px;
+            height: 30px;
+            background-color: #5D4037;
+            transform: translateX(-50%) rotate(-10deg);
+            z-index: 10;
+        }
+        
+        .apple-leaf {
+            position: absolute;
+            top: -10px;
+            left: calc(50% + 10px);
+            width: 25px;
+            height: 25px;
+            background-color: #4CAF50;
+            border-radius: 0 50% 0 50%;
+            transform: rotate(45deg);
+            z-index: 5;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .content::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f0f8f0' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .stat-card {
+            background-color: #FFEBEE;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px dashed #DB4437;
+            position: relative;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(219, 68, 55, 0.2);
+        }
+        
+        .stat-title {
+            color: #DB4437;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .stat-value {
+            color: #333;
+        }
+        
+        .charts-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .chart-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid #E0E0E0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .chart-container::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(219, 68, 55, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .chart-title {
+            color: #DB4437;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .confusion-table {
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .confusion-table th, .confusion-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .confusion-table th {
+            background-color: #DB4437;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .confusion-table td {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        
+        .confusion-table tr:hover td {
+            background-color: #FFF8E1;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 10; /* Ensure nav is above other elements */
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            position: relative; /* Establish stacking context */
+            z-index: 11; /* Ensure buttons are clickable */
+        }
+        
+        .nav-btn:hover {
+            background-color: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        
+        .logout-btn {
+            background-color: #757575;
+        }
+        
+        .logout-btn:hover {
+            background-color: #616161;
+        }
+        
+        .apple-icon {
+            margin-right: 8px;
+        }
+        
+        .floating-apple {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: rgba(219, 68, 55, 0.2);
+            border-radius: 50%;
+            animation: float 7s infinite ease-in-out;
+            z-index: 1; /* Lower z-index to ensure it's below buttons */
+        }
+        
+        .apple-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .apple-2 {
+            top: 50%;
+            right: 7%;
+            width: 10px;
+            height: 10px;
+            animation-delay: 2s;
+        }
+        
+        .apple-3 {
+            bottom: 15%;
+            left: 20%;
+            width: 12px;
+            height: 12px;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                margin: 5px 0;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .stat-card {
+                padding: 15px 10px;
+            }
+            
+            .confusion-table {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="apple-stem"></div>
+            <div class="apple-leaf"></div>
+            <h1><i class="fas fa-chart-pie apple-icon"></i> Apple Quality Dashboard</h1>
+            <p>Your data insights at a glance!</p>
+        </div>
+        
+        <div class="content">
+            <div class="floating-apple apple-1"></div>
+            <div class="floating-apple apple-2"></div>
+            <div class="floating-apple apple-3"></div>
+            
+            {% if error %}
+                <p style="color: red;">Error: {{ error }}</p>
+            {% endif %}
+            
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-database apple-icon"></i> Number of Rows:</div>
+                <div class="stat-value">{{ num_rows }}</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-chart-bar apple-icon"></i> Target Distribution:</div>
+                <div class="stat-value">Good: {{ target_distribution.Good|floatformat:1 }}%, Bad: {{ target_distribution.Bad|floatformat:1 }}%</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-calculator apple-icon"></i> Feature Means:</div>
+                <div class="stat-value">
+                    {% for feature, mean in feature_means.items %}
+                        {{ feature }}: {{ mean|floatformat:2 }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-check-circle apple-icon"></i> Model Accuracy:</div>
+                <div class="stat-value">{{ accuracy }}%</div>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title"><i class="fas fa-table apple-icon"></i> Confusion Matrix</h3>
+                <table class="confusion-table">
+                    <tr>
+                        <th></th>
+                        <th>Predicted Good</th>
+                        <th>Predicted Bad</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Actual Good</strong></td>
+                        <td>{{ confusion_matrix_data.1.1 }}</td>
+                        <td>{{ confusion_matrix_data.1.0 }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Actual Bad</strong></td>
+                        <td>{{ confusion_matrix_data.0.1 }}</td>
+                        <td>{{ confusion_matrix_data.0.0 }}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-pie apple-icon"></i> Quality Distribution</h3>
+                    <img src="{{ pie_chart }}" alt="Pie Chart">
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-weight-hanging apple-icon"></i> Feature Importance</h3>
+                    <img src="{{ feature_importance }}" alt="Feature Importance">
+                </div>
+            </div>
+            
+            <div class="nav">
+                <a href="{% url 'predictor:predict' %}" class="nav-btn"><i class="fas fa-magic"></i> Go to Predict</a>
+                <a href="{% url 'predictor:logout' %}" class="nav-btn logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            
+            <div class="footer">
+                <p>Apple Quality Predictor <i class="fas fa-apple-alt" style="color: #DB4437;"></i> Created with <i class="fas fa-heart" style="color: #E91E63;"></i></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

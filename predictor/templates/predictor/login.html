@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Apple Quality Predictor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f8f8f8;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e0f7e0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .container {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background-color: #DB4437;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -40px;
+            left: -40px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+        }
+        
+        .apple-stem {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            width: 8px;
+            height: 30px;
+            background-color: #5D4037;
+            transform: translateX(-50%) rotate(-10deg);
+            z-index: 10;
+        }
+        
+        .apple-leaf {
+            position: absolute;
+            top: -10px;
+            left: calc(50% + 10px);
+            width: 25px;
+            height: 25px;
+            background-color: #4CAF50;
+            border-radius: 0 50% 0 50%;
+            transform: rotate(45deg);
+            z-index: 5;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f0f8f0' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .form-title {
+            color: #DB4437;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            border-color: #DB4437;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(219, 68, 55, 0.2);
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+        
+        .checkbox-label {
+            font-weight: normal;
+            margin-left: 5px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        
+        button {
+            background-color: #DB4437;
+            color: white;
+            padding: 12px 0;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(219, 68, 55, 0.3);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            background-color: #C62828;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(219, 68, 55, 0.4);
+        }
+        
+        .link {
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .link p {
+            color: #555;
+        }
+        
+        .link a {
+            color: #DB4437;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .link a:hover {
+            color: #C62828;
+            text-decoration: underline;
+        }
+        
+        .apple-icon {
+            margin-right: 8px;
+        }
+        
+        .floating-apple {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: rgba(219, 68, 55, 0.2);
+            border-radius: 50%;
+            animation: float 7s infinite ease-in-out;
+            z-index: 0;
+        }
+        
+        .apple-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .apple-2 {
+            top: 70%;
+            right: 15%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+        }
+        
+        .apple-3 {
+            bottom: 10%;
+            left: 20%;
+            width: 10px;
+            height: 10px;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                margin: 20px auto;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="apple-stem"></div>
+            <div class="apple-leaf"></div>
+            <h1><i class="fas fa-apple-alt apple-icon"></i> Login</h1>
+        </div>
+        <div class="content">
+            <h2 class="form-title">Welcome back to the orchard!</h2>
+            
+            <div class="floating-apple apple-1"></div>
+            <div class="floating-apple apple-2"></div>
+            <div class="floating-apple apple-3"></div>
+            
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.label == "Password" %}
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" id="show-password">
+                                <label for="show-password" class="checkbox-label">
+                                    Show Password
+                                </label>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+            <div class="link">
+                <p>Don't have an account? <a href="{% url 'predictor:register' %}">Register</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('show-password').addEventListener('change', function() {
+            const passwordField = document.querySelector('input[name="password"]');
+            passwordField.type = this.checked ? 'text' : 'password';
+        });
+    </script>
+</body>
+</html>
